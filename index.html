@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>FeVeDucation</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Poppins:wght@400;600;800&family=VT323&display=swap" rel="stylesheet">
+    <script>
+      tailwind.config = {
+        darkMode: 'class', // Enable dark mode
+        theme: {
+          extend: {
+            fontFamily: {
+              'sans': ['Poppins', 'sans-serif'],
+              'fredoka': ['Fredoka', 'sans-serif'],
+              'mono': ['VT323', 'monospace'],
+            },
+            colors: {
+              'brand-pink': '#F72585',
+              'brand-purple': '#7209B7',
+              'brand-blue-light': '#4CC9F0',
+              'brand-blue-dark': '#3A0CA3',
+              'brand-lime': '#ADFF00',
+              'brand-yellow': '#FFD166',
+            },
+            boxShadow: {
+              'hard': '4px 4px 0px 0px rgba(0,0,0,1)',
+              'hard-sm': '2px 2px 0px 0px rgba(0,0,0,1)',
+              'hard-brand': '4px 4px 0px 0px #F72585',
+              'dark-hard': '4px 4px 0px 0px rgba(255,255,255,0.7)',
+            }
+          }
+        }
+      }
+    </script>
+  <script type="importmap">
+{
+  "imports": {
+    "react-dom/": "https://esm.sh/react-dom@^19.1.0/",
+    "react/": "https://esm.sh/react@^19.1.0/",
+    "react": "https://esm.sh/react@^19.1.0",
+    "react-router-dom": "https://esm.sh/react-router-dom@^7.6.3",
+    "@google/genai": "https://esm.sh/@google/genai@^1.9.0"
+  }
+}
+</script>
+<style>
+.fade-in-section {
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+  will-change: opacity, transform;
+}
+.fade-in-section.is-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Animated Frames CSS */
+@keyframes rgb-flow {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+.frame-rgb {
+  padding: 4px;
+  background: linear-gradient(90deg, #F72585, #7209B7, #3A0CA3, #4CC9F0, #ADFF00, #FFD166, #F72585);
+  background-size: 400% 400%;
+  animation: rgb-flow 8s ease infinite;
+  border-radius: 0.75rem; /* 12px */
+}
+
+@keyframes candy-cane-scroll {
+  to { background-position: 100%; }
+}
+.frame-christmas {
+  padding: 4px;
+  background: repeating-linear-gradient(
+    -45deg,
+    #d13447,
+    #d13447 15px,
+    #ffffff 15px,
+    #ffffff 30px
+  );
+  background-size: 150% 150%;
+  animation: candy-cane-scroll 10s linear infinite;
+  border-radius: 0.75rem;
+}
+
+@keyframes ghost-pulse {
+  0%, 100% { box-shadow: 0 0 10px 3px rgba(76, 201, 240, 0.5), inset 0 0 10px 3px rgba(76, 201, 240, 0.5); opacity: 0.7; }
+  50% { box-shadow: 0 0 20px 8px rgba(76, 201, 240, 0.7), inset 0 0 15px 5px rgba(76, 201, 240, 0.7); opacity: 1; }
+}
+.frame-ghost {
+  border: 4px solid rgba(76, 201, 240, 0.3);
+  animation: ghost-pulse 4s ease-in-out infinite;
+  border-radius: 0.75rem;
+}
+
+@keyframes fire-flicker {
+  0%   { box-shadow: 0 0 5px #ff4500, 0 0 10px #ff4500, 0 0 15px #ff8c00, 0 0 20px #ff8c00; }
+  25%  { box-shadow: 0 0 10px #ff4500, 0 0 20px #ff8c00, 0 0 25px #ff8c00, 0 0 30px #ffd700; }
+  50%  { box-shadow: 0 0 5px #ff8c00, 0 0 15px #ff8c00, 0 0 20px #ffd700, 0 0 25px #ffd700; }
+  75%  { box-shadow: 0 0 10px #ffd700, 0 0 20px #ff4500, 0 0 25px #ff4500, 0 0 30px #ff8c00; }
+  100% { box-shadow: 0 0 5px #ff4500, 0 0 10px #ff4500, 0 0 15px #ff8c00, 0 0 20px #ff8c00; }
+}
+.frame-fire {
+  border-radius: 0.75rem;
+  animation: fire-flicker 2s linear infinite;
+}
+
+/* Base body styles */
+body {
+  transition: background-color 0.5s ease, color 0.5s ease;
+}
+
+/* --- THEME OVERRIDES --- */
+
+/* Glassmorphism Theme */
+.theme-glass { background: #e0e0e0; }
+.theme-glass.dark { background: #2d3748; }
+
+.theme-glass .fvd-card, .theme-glass .fvd-header, .theme-glass .fvd-modal {
+  background: rgba(255, 255, 255, 0.45) !important;
+  backdrop-filter: blur(12px) !important;
+  -webkit-backdrop-filter: blur(12px) !important;
+  border: 1px solid rgba(255, 255, 255, 0.25) !important;
+  box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.1) !important;
+  transition: all 0.3s ease;
+}
+.theme-glass.dark .fvd-card, .theme-glass.dark .fvd-header, .theme-glass.dark .fvd-modal {
+  background: rgba(45, 55, 72, 0.6) !important;
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+}
+.theme-glass .fvd-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 32px 0 rgba(31, 38, 135, 0.15) !important;
+}
+.theme-glass button {
+    background: rgba(255, 255, 255, 0.2);
+    border-width: 1px;
+    border-color: rgba(255, 255, 255, 0.3);
+}
+.theme-glass.dark button {
+    background: rgba(255, 255, 255, 0.1);
+}
+.theme-glass .fvd-chat-bubble {
+    background: rgba(76, 201, 240, 0.5) !important;
+    backdrop-filter: blur(5px) !important;
+    -webkit-backdrop-filter: blur(5px) !important;
+}
+.theme-glass.dark .fvd-chat-bubble {
+    background: rgba(76, 201, 240, 0.2) !important;
+}
+
+/* Matrix Theme */
+@keyframes text-flicker {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.7; }
+}
+@keyframes glitch {
+  0% { transform: translate(0); }
+  20% { transform: translate(-2px, 2px); }
+  40% { transform: translate(-2px, -2px); }
+  60% { transform: translate(2px, 2px); }
+  80% { transform: translate(2px, -2px); }
+  100% { transform: translate(0); }
+}
+
+.theme-matrix { background-color: #000 !important; color: #00ff00; }
+.theme-matrix * { font-family: 'VT323', monospace !important; text-shadow: 0 0 2px #0f0, 0 0 5px #0f0; }
+.theme-matrix ::-moz-selection { background: #00ff00; color: #000; }
+.theme-matrix ::selection { background: #00ff00; color: #000; }
+.theme-matrix h1, .theme-matrix h2, .theme-matrix h3, .theme-matrix a, .theme-matrix button, .theme-matrix p, .theme-matrix span, .theme-matrix label, .theme-matrix li, .theme-matrix input, .theme-matrix select, .theme-matrix textarea {
+  color: #00ff00 !important; border-radius: 0 !important;
+  animation: text-flicker 3s linear infinite;
+}
+.theme-matrix .fvd-card, .theme-matrix .fvd-header, .theme-matrix .fvd-modal {
+  background-color: #0d0d0d !important;
+  border: 1px solid #0f0 !important;
+  box-shadow: inset 0 0 10px #0f0, 0 0 5px #0f0 !important;
+}
+.theme-matrix .fvd-card:hover { transform: none; background-color: #1a1a1a !important; }
+.theme-matrix button, .theme-matrix input, .theme-matrix select, .theme-matrix textarea {
+  background-color: #050505 !important; border: 1px solid #0f0 !important; color: #0f0 !important;
+}
+.theme-matrix button:hover { animation: glitch 0.2s linear infinite; background-color: #111 !important; }
+.theme-matrix ::placeholder { color: #008f00 !important; opacity: 1; }
+.theme-matrix .fvd-chat-bubble { background: #0a0a0a !important; border: 1px solid #0f0 !important; }
+.theme-matrix .frame-rgb, .theme-matrix .frame-christmas, .theme-matrix .frame-fire, .theme-matrix .frame-ghost {
+    background: #0f0 !important; animation: none !important; border-radius: 0 !important;
+}
+
+/* Vibrant Overload Theme */
+.theme-vibrant { background-color: #fdf4f5; }
+.theme-vibrant.dark { background-color: #2c2a4a; }
+.theme-vibrant h1, .theme-vibrant h2, .theme-vibrant h3 { font-family: 'Fredoka', sans-serif !important; font-weight: 700 !important; }
+.theme-vibrant .fvd-card {
+  box-shadow: 4px 4px 0px 0px #F72585, 8px 8px 0px 0px #FFD166;
+  border: 3px solid #7209B7;
+  transition: all 0.2s ease-in-out !important;
+}
+.theme-vibrant.dark .fvd-card {
+  box-shadow: 4px 4px 0px 0px #ADFF00, 8px 8px 0px 0px #4CC9F0;
+  border-color: #F72585;
+}
+.theme-vibrant .fvd-card:hover { transform: scale(1.02) rotate(1deg); }
+.theme-vibrant button { font-weight: 600 !important; }
+.theme-vibrant .fvd-modal {
+    border-width: 4px !important;
+    border-style: solid;
+    border-image: linear-gradient(to right, #F72585, #ADFF00) 1;
+}
+.theme-vibrant .fvd-chat-bubble {
+    border: 2px solid #F72585 !important;
+    box-shadow: 2px 2px 0 #FFD166;
+}
+
+</style>
+<link rel="stylesheet" href="/index.css">
+</head>
+  <body class="bg-stone-50 dark:bg-gray-900">
+    <div id="root"></div>
+  <script type="module" src="/index.tsx"></script>
+</body>
+</html>
