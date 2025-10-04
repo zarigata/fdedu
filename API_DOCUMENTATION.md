@@ -127,8 +127,14 @@ This document outlines the API endpoints required to transition FeVeDucation fro
 ## 🏫 Classroom & Roster API
 
 ### `GET /api/classrooms`
-- **Description**: Fetches all classrooms. Admin only.
+- **Description**: Lists classrooms visible to the authenticated user based on their role.
+  - Admins: all classrooms
+  - Teachers: classrooms they own (optionally filtered by school)
+  - Students: classrooms they are enrolled in (optionally filtered by school)
 - **Response**: `[ ...Classroom[] ]`
+- **Errors**:
+  - `401 UNAUTHORIZED` - Not authenticated
+
 
 ### `POST /api/classrooms`
 - **Description**: Creates a new classroom. Teacher/Admin only. The `teacherId` should be taken from the auth token.
@@ -144,14 +150,29 @@ This document outlines the API endpoints required to transition FeVeDucation fro
 - **Description**: Deletes a classroom. Teacher/Admin only.
 - **Response**: `204 No Content`
 
+- **Errors**:
+  - `401 UNAUTHORIZED`
+  - `403 FORBIDDEN` - User lacks required role or ownership
+  - `404 NOT_FOUND` - Classroom not found
+
 ### `POST /api/classrooms/:classroomId/students`
-- **Description**: Enrolls a student in a classroom. Admin only.
+- **Description**: Enrolls a student in a classroom. Teacher/Admin only. Teacher must own the classroom and can only enroll students from the same school.
 - **Request Body**: `{ "studentId": "..." }`
 - **Response**: `200 OK`
+- **Errors**:
+  - `400 VALIDATION_ERROR` - Invalid UUID/body
+  - `401 UNAUTHORIZED`
+  - `403 FORBIDDEN` - Teacher does not own classroom or student belongs to another school
+  - `404 NOT_FOUND` - Classroom or student not found
+  - `409 ENROLLMENT_EXISTS` - Student already enrolled in the classroom
 
 ### `DELETE /api/classrooms/:classroomId/students/:studentId`
-- **Description**: Removes a student from a classroom. Admin only.
+- **Description**: Removes a student from a classroom. Teacher/Admin only (teacher must own the classroom).
 - **Response**: `204 No Content`
+- **Errors**:
+  - `401 UNAUTHORIZED`
+  - `403 FORBIDDEN` - Teacher does not own classroom
+  - `404 NOT_FOUND` - Classroom or enrollment not found
 
 ---
 

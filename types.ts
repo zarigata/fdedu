@@ -60,6 +60,14 @@ export interface User {
   studyDecks?: StudyDeck[];
 }
 
+export interface School {
+  id: string;
+  name: string;
+  domain: string;
+  featureFlags: Record<string, boolean | string | number>;
+  createdAt: string;
+}
+
 export interface ClassroomFile {
   id: string;
   name: string;
