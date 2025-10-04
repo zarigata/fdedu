@@ -34,6 +34,96 @@ This document outlines the API endpoints required to transition FeVeDucation fro
 
 ---
 
+## 👥 User Management API (Admin Only)
+
+**Note**: All user management endpoints require admin role and use the `Authorization: Bearer <token>` header for authentication.
+
+### `GET /api/users`
+- **Description**: Fetches all users with pagination and optional filters. Admin only.
+- **Query Parameters**:
+  - `page` (optional): Page number (default: 1)
+  - `limit` (optional): Items per page (default: 20, max: 100)
+  - `role` (optional): Filter by user role (`student`, `teacher`, `admin`, `school_manager`)
+  - `school_id` (optional): Filter by school ID (for future multi-tenancy)
+- **Response**: `{ "data": [...UserResponse[]], "pagination": { "page": 1, "limit": 20, "total": 100, "totalPages": 5 } }`
+- **Errors**: 
+  - `401 UNAUTHORIZED` - Not authenticated
+  - `403 FORBIDDEN` - Not admin
+  - `400 VALIDATION_ERROR` - Invalid query parameters
+  - `500 INTERNAL_ERROR` - Server error
+
+### `GET /api/users/:id`
+- **Description**: Fetches a single user by ID. Admin only.
+- **Path Parameters**: `id` (UUID)
+- **Response**: `{ ...UserResponse }`
+- **Errors**: 
+  - `401 UNAUTHORIZED` - Not authenticated
+  - `403 FORBIDDEN` - Not admin
+  - `400 VALIDATION_ERROR` - Invalid UUID format
+  - `404 NOT_FOUND` - User not found
+  - `500 INTERNAL_ERROR` - Server error
+
+### `POST /api/users`
+- **Description**: Creates a new user. Admin only.
+- **Request Body**: 
+  ```json
+  {
+    "name": "John Doe",
+    "email": "john@example.com",
+    "password": "password123",
+    "role": "student",
+    "school_id": "uuid-string" (optional),
+    "avatar": "https://..." (optional),
+    "points": 0 (optional),
+    "ai_tokens": 100 (optional)
+  }
+  ```
+- **Response**: `201 Created` with `{ ...UserResponse }`
+- **Errors**:
+  - `401 UNAUTHORIZED` - Not authenticated
+  - `403 FORBIDDEN` - Not admin
+  - `400 VALIDATION_ERROR` - Invalid request body
+  - `409 EMAIL_EXISTS` - Email already registered
+  - `500 INTERNAL_ERROR` - Server error
+
+### `PUT /api/users/:id`
+- **Description**: Updates an existing user. Admin only. All fields are optional; only provided fields will be updated.
+- **Path Parameters**: `id` (UUID)
+- **Request Body**: 
+  ```json
+  {
+    "name": "..." (optional),
+    "email": "..." (optional),
+    "password": "..." (optional),
+    "role": "..." (optional),
+    "school_id": "..." (optional),
+    "avatar": "..." (optional),
+    "points": 100 (optional),
+    "ai_tokens": 50 (optional)
+  }
+  ```
+- **Response**: `{ ...UserResponse }`
+- **Errors**:
+  - `401 UNAUTHORIZED` - Not authenticated
+  - `403 FORBIDDEN` - Not admin
+  - `400 VALIDATION_ERROR` - Invalid request body or no fields provided
+  - `404 NOT_FOUND` - User not found
+  - `409 EMAIL_EXISTS` - Email already in use by another user
+  - `500 INTERNAL_ERROR` - Server error
+
+### `DELETE /api/users/:id`
+- **Description**: Deletes a user. Admin only.
+- **Path Parameters**: `id` (UUID)
+- **Response**: `204 No Content`
+- **Errors**:
+  - `401 UNAUTHORIZED` - Not authenticated
+  - `403 FORBIDDEN` - Not admin
+  - `400 VALIDATION_ERROR` - Invalid UUID format
+  - `404 NOT_FOUND` - User not found
+  - `500 INTERNAL_ERROR` - Server error
+
+---
+
 ## 🏫 Classroom & Roster API
 
 ### `GET /api/classrooms`
